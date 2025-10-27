@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<UI version="4.0" >
+ <class>QTProjectAppli_7ecompagnieClass</class>
+ <widget class="QMainWindow" name="QTProjectAppli_7ecompagnieClass" >
+  <property name="objectName" >
+   <string notr="true">QTProjectAppli_7ecompagnieClass</string>
+  </property>
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>600</width>
+    <height>400</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>QTProjectAppli_7ecompagnie</string>
+  </property>  <widget class="QMenuBar" name="menuBar" />
+  <widget class="QToolBar" name="mainToolBar" />
+  <widget class="QWidget" name="centralWidget" />
+  <widget class="QStatusBar" name="statusBar" />
+ </widget>
+ <layoutDefault spacing="6" margin="11" />
+ <pixmapfunction></pixmapfunction>
+ <resources>
+   <include location="QTProjectAppli_7ecompagnie.qrc"/>
+ </resources>
+ <connections/>
+</UI>
