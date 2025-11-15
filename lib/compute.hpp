@@ -1,4 +1,4 @@
-	#pragma once
+#pragma once
 #include <vector>
 #include "particles_types.hpp"
 
@@ -11,6 +11,9 @@ public:
     virtual size_t size() const = 0;
 };
 
+// backends concrets
 IComputeBackend* make_backend_cpu(size_t n);
-IComputeBackend* make_backend(size_t n);
+IComputeBackend* make_backend_cuda(size_t n); // peut retourner nullptr si pas de GPU
 
+// fabrique unique
+IComputeBackend* make_backend(size_t n);

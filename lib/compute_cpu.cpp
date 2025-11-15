@@ -11,18 +11,23 @@ struct BackendCPU : IComputeBackend {
 
     void step(SimParams p) override {
         for (auto& s : buf) {
-            float dx = p.mouseX - s.x, dy = p.mouseY - s.y;
+            float dx = p.mouseX - s.x;
+            float dy = p.mouseY - s.y;
             float d2 = dx*dx + dy*dy;
-            if (d2 < p.range*p.range && d2 > 1e-6f) {
+
+            if (d2 < p.range * p.range && d2 > 1e-6f) {
                 float invd = 1.0f / std::sqrt(d2);
                 float fx = p.mouseForce * dx * invd;
                 float fy = p.mouseForce * dy * invd;
                 s.vx = (s.vx + fx * p.dt) * p.damping;
                 s.vy = (s.vy + fy * p.dt) * p.damping;
             } else {
-                s.vx *= p.damping; s.vy *= p.damping;
+                s.vx *= p.damping;
+                s.vy *= p.damping;
             }
-            s.x += s.vx * p.dt; s.y += s.vy * p.dt;
+
+            s.x += s.vx * p.dt;
+            s.y += s.vy * p.dt;
         }
     }
 
@@ -31,8 +36,8 @@ struct BackendCPU : IComputeBackend {
 };
 }
 
-IComputeBackend* make_backend_cpu(size_t n) { return new BackendCPU(n); }
-
-IComputeBackend* make_backend(size_t n) {
-    return make_backend_cpu(n);
+// ⚠️ CPU ONLY ici
+IComputeBackend* make_backend_cpu(size_t n) {
+    return new BackendCPU(n);
 }
+

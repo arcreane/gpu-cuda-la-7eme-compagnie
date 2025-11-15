@@ -175,6 +175,10 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
+    <ProjectReference Include="C:\Users\tutur\QTProjectAppli_7ecompagnie\build\backend_factory.vcxproj">
+      <Project>{9EEA7A9F-C4F1-33D4-B9CF-C90F9139C2C5}</Project>
+      <Name>backend_factory</Name>
+    </ProjectReference>
     <ProjectReference Include="C:\Users\tutur\QTProjectAppli_7ecompagnie\build\check_headers.vcxproj">
       <Project>{CB8A3B2C-E56F-3384-81A5-D655D8CE4A90}</Project>
       <Name>check_headers</Name>
