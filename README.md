@@ -46,7 +46,7 @@ Deux implémentations existent : compute_cpu.cpp, pour la mise à jour séquenti
 
 La fonction make_backend() dans backend_factory.cpp détecte automatiquement un GPU Nvidia, sélectionne cuda si disponible et sinon bascule sur CPU. Ca permet à l'appli de tourner sur n'importe quel pc.
 
-La classe SimWorld encapsule entièrement la logique du moteur. Elle comprend la gestion des particules côté CPU, l'interaction avec le backend CPU ou cuda, les upload/download, les étapes de simulation (step) et une initialisation aléatoire.
+La classe SimWorld comprend entièrement la logique du moteur. Elle comprend la gestion des particules côté CPU, l'interaction avec le backend CPU ou cuda, les upload/download, les étapes de simulation (step) et une initialisation aléatoire.
 
 
 
