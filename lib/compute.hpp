@@ -1,4 +1,4 @@
-#pragma once
+	#pragma once
 #include <vector>
 #include "particles_types.hpp"
 
@@ -10,3 +10,5 @@ public:
     virtual void download(std::vector<Particle>& host) = 0;
     virtual size_t size() const = 0;
 };
+
+IComputeBackend* make_backend_cpu(size_t n);
