@@ -2,6 +2,7 @@ C:/Users/tutur/QTProjectAppli_7ecompagnie/build/CMakeFiles/hello_build.dir
 C:/Users/tutur/QTProjectAppli_7ecompagnie/build/CMakeFiles/hello_cuda.dir
 C:/Users/tutur/QTProjectAppli_7ecompagnie/build/CMakeFiles/check_headers.dir
 C:/Users/tutur/QTProjectAppli_7ecompagnie/build/CMakeFiles/compute_cpu.dir
+C:/Users/tutur/QTProjectAppli_7ecompagnie/build/CMakeFiles/compute_cuda.dir
 C:/Users/tutur/QTProjectAppli_7ecompagnie/build/CMakeFiles/test_cpu_only.dir
 C:/Users/tutur/QTProjectAppli_7ecompagnie/build/CMakeFiles/ALL_BUILD.dir
 C:/Users/tutur/QTProjectAppli_7ecompagnie/build/CMakeFiles/ZERO_CHECK.dir

@@ -17,8 +17,12 @@ target_include_directories(check_headers PRIVATE lib)
 # --- lib CPU ---
 add_library(compute_cpu lib/compute_cpu.cpp)
 target_include_directories(compute_cpu PUBLIC lib)
+add_library(compute_cuda lib/compute_cuda.cu)
+target_include_directories(compute_cuda PUBLIC lib)
+target_link_libraries(compute_cuda PRIVATE CUDA::cudart)
 
 # --- test console CPU ---
 add_executable(test_cpu_only src/test_cpu_only.cpp)
 target_include_directories(test_cpu_only PRIVATE lib)
 target_link_libraries(test_cpu_only PRIVATE compute_cpu)
+
