@@ -13,7 +13,7 @@ public:
 
 // backends concrets
 IComputeBackend* make_backend_cpu(size_t n);
-IComputeBackend* make_backend_cuda(size_t n); // peut retourner nullptr si pas de GPU
+IComputeBackend* make_backend_cuda(size_t n); // peut retourner nullptr si pas de gpu
 
-// fabrique unique
+// factory unique
 IComputeBackend* make_backend(size_t n);

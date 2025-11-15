@@ -29,7 +29,19 @@ target_include_directories(backend_factory PUBLIC lib)
 target_link_libraries(backend_factory PUBLIC compute_cpu)
 # (plus tard on ajoutera compute_cuda ici quand la fabrique utilisera vraiment le GPU)
 
+add_library(sim_world lib/sim_world.cpp)
+target_include_directories(sim_world PUBLIC lib)
+target_link_libraries(sim_world PUBLIC backend_factory)
+
 # --- test console ---
 add_executable(test_cpu_only src/test_cpu_only.cpp)
 target_include_directories(test_cpu_only PRIVATE lib)
 target_link_libraries(test_cpu_only PRIVATE backend_factory)
+
+add_executable(test_perf src/test_perf.cpp)
+target_include_directories(test_perf PRIVATE lib)
+target_link_libraries(test_perf PRIVATE backend_factory)
+
+add_executable(test_world src/test_world.cpp)
+target_include_directories(test_world PRIVATE lib)
+target_link_libraries(test_world PRIVATE sim_world)

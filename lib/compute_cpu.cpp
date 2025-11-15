@@ -36,7 +36,6 @@ struct BackendCPU : IComputeBackend {
 };
 }
 
-// ⚠️ CPU ONLY ici
 IComputeBackend* make_backend_cpu(size_t n) {
     return new BackendCPU(n);
 }

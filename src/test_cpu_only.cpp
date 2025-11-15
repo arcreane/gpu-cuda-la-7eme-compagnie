@@ -15,7 +15,7 @@ int main() {
         p.r = p.g = p.b = 200; p.a = 255;
     }
 
-    IComputeBackend* backend = make_backend(N);   // ✅ passe par la fabrique
+    IComputeBackend* backend = make_backend(N);   
     backend->upload(init);
 
     SimParams p;
