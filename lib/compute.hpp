@@ -12,3 +12,5 @@ public:
 };
 
 IComputeBackend* make_backend_cpu(size_t n);
+IComputeBackend* make_backend(size_t n);
+

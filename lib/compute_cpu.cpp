@@ -32,3 +32,7 @@ struct BackendCPU : IComputeBackend {
 }
 
 IComputeBackend* make_backend_cpu(size_t n) { return new BackendCPU(n); }
+
+IComputeBackend* make_backend(size_t n) {
+    return make_backend_cpu(n);
+}

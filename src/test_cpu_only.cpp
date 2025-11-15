@@ -11,7 +11,7 @@ int main() {
     std::uniform_real_distribution<float> U(-100.f, 100.f);
     for (auto& p : init) { p.x=U(rng); p.y=U(rng); p.vx=p.vy=0; p.r=p.g=p.b=200; p.a=255; }
 
-    IComputeBackend* backend = make_backend_cpu(N);
+    IComputeBackend* backend = make_backend(N);
     backend->upload(init);
 
     SimParams p; p.mouseX=0; p.mouseY=0; p.mouseForce=120.f; p.range=150.f;
