@@ -318,6 +318,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="C:\Users\tutur\QTProjectAppli_7ecompagnie\lib\sim_world.cpp" />
+    <ClInclude Include="C:\Users\tutur\QTProjectAppli_7ecompagnie\lib\sim_world.hpp" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

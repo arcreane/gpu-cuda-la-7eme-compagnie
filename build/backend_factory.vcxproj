@@ -318,6 +318,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="C:\Users\tutur\QTProjectAppli_7ecompagnie\lib\backend_factory.cpp" />
+    <ClInclude Include="C:\Users\tutur\QTProjectAppli_7ecompagnie\lib\compute.hpp" />
+    <ClInclude Include="C:\Users\tutur\QTProjectAppli_7ecompagnie\lib\particles_types.hpp" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

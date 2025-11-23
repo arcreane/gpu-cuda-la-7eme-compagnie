@@ -191,13 +191,9 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <Project>{34B01829-FFC8-3749-ABDD-9CD063D4EFBB}</Project>
       <Name>compute_cuda</Name>
     </ProjectReference>
-    <ProjectReference Include="C:\Users\tutur\QTProjectAppli_7ecompagnie\build\hello_build.vcxproj">
-      <Project>{668656AC-ECFD-3B43-9D90-02F5AB7F8B2C}</Project>
-      <Name>hello_build</Name>
-    </ProjectReference>
-    <ProjectReference Include="C:\Users\tutur\QTProjectAppli_7ecompagnie\build\hello_cuda.vcxproj">
-      <Project>{B069A84E-121A-335A-9343-926DD39D6589}</Project>
-      <Name>hello_cuda</Name>
+    <ProjectReference Include="C:\Users\tutur\QTProjectAppli_7ecompagnie\build\raylib_demo.vcxproj">
+      <Project>{734DF423-1ED5-3B5A-9EFE-2EE0D910C0CE}</Project>
+      <Name>raylib_demo</Name>
     </ProjectReference>
     <ProjectReference Include="C:\Users\tutur\QTProjectAppli_7ecompagnie\build\sim_world.vcxproj">
       <Project>{AC6D184D-D6DD-3333-BB99-1FC5C7BE623B}</Project>

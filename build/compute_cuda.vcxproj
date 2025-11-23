@@ -108,7 +108,7 @@
     <CudaCompile>
       <Include>C:\Users\tutur\QTProjectAppli_7ecompagnie\lib;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v13.0\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v13.0\include\cccl;%(Include)</Include>
       <Defines>%(Defines);_WINDOWS;CMAKE_INTDIR="Debug"</Defines>
-      <AdditionalOptions>%(AdditionalOptions) -std=c++17 --generate-code=arch=compute_75,code=[compute_75,sm_75] -Xcompiler="/EHsc -Zi -Ob0"</AdditionalOptions>
+      <AdditionalOptions>%(AdditionalOptions) -std=c++17 --generate-code=arch=compute_75,code=[compute_75,sm_75] -Xcompiler="/EHsc -Ob0 -Zi"</AdditionalOptions>
       <CodeGeneration></CodeGeneration>
       <CompileOut>$(IntDir)%(Filename).obj</CompileOut>
       <CudaRuntime>Static</CudaRuntime>
@@ -280,7 +280,7 @@
     <CudaCompile>
       <Include>C:\Users\tutur\QTProjectAppli_7ecompagnie\lib;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v13.0\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v13.0\include\cccl;%(Include)</Include>
       <Defines>%(Defines);_WINDOWS;NDEBUG;CMAKE_INTDIR="RelWithDebInfo"</Defines>
-      <AdditionalOptions>%(AdditionalOptions) -std=c++17 --generate-code=arch=compute_75,code=[compute_75,sm_75] -Xcompiler="/EHsc -Zi -Ob1"</AdditionalOptions>
+      <AdditionalOptions>%(AdditionalOptions) -std=c++17 --generate-code=arch=compute_75,code=[compute_75,sm_75] -Xcompiler="/EHsc -Ob1 -Zi"</AdditionalOptions>
       <CodeGeneration></CodeGeneration>
       <CompileOut>$(IntDir)%(Filename).obj</CompileOut>
       <CudaRuntime>Static</CudaRuntime>
