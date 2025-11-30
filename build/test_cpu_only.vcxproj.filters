@@ -1,14 +1,55 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <ClCompile Include="C:\Users\tutur\QTProjectAppli_7ecompagnie\build\test_cpu_only_autogen\mocs_compilation_Debug.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="C:\Users\tutur\QTProjectAppli_7ecompagnie\src\test_cpu_only.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tutur\QTProjectAppli_7ecompagnie\build\test_cpu_only_autogen\mocs_compilation_Release.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tutur\QTProjectAppli_7ecompagnie\build\test_cpu_only_autogen\mocs_compilation_MinSizeRel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\tutur\QTProjectAppli_7ecompagnie\build\test_cpu_only_autogen\mocs_compilation_RelWithDebInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="C:\Users\tutur\QTProjectAppli_7ecompagnie\build\test_cpu_only_autogen\include_Debug\qt_interface\ui_projet_interface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tutur\QTProjectAppli_7ecompagnie\build\test_cpu_only_autogen\include_Release\qt_interface\ui_projet_interface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tutur\QTProjectAppli_7ecompagnie\build\test_cpu_only_autogen\include_MinSizeRel\qt_interface\ui_projet_interface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\tutur\QTProjectAppli_7ecompagnie\build\test_cpu_only_autogen\include_RelWithDebInfo\qt_interface\ui_projet_interface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\tutur\QTProjectAppli_7ecompagnie\build\CMakeFiles\3c3ffcf2094990412d63fd5440f1f0a5\autouic_(CONFIG).stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
     <CustomBuild Include="C:\Users\tutur\QTProjectAppli_7ecompagnie\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="C:\Users\tutur\QTProjectAppli_7ecompagnie\build\test_cpu_only_autogen\autouic_Debug.stamp" />
+    <None Include="C:\Users\tutur\QTProjectAppli_7ecompagnie\build\test_cpu_only_autogen\autouic_Release.stamp" />
+    <None Include="C:\Users\tutur\QTProjectAppli_7ecompagnie\build\test_cpu_only_autogen\autouic_MinSizeRel.stamp" />
+    <None Include="C:\Users\tutur\QTProjectAppli_7ecompagnie\build\test_cpu_only_autogen\autouic_RelWithDebInfo.stamp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{BCD9886A-06C0-3E42-AF39-59EB6212409E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{B1A749C5-87FB-32E7-8A42-97A23265EB5F}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source Files">
       <UniqueIdentifier>{AA1CDDC7-BEBF-3A4A-93D6-48825456DDF7}</UniqueIdentifier>
     </Filter>

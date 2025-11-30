@@ -1,3 +1,0 @@
-
-git switch nom-de-branche
-J'ai glissé chef!!!!

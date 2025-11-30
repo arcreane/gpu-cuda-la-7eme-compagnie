@@ -2,46 +2,34 @@
 
 #include <cstdint>
 
-//Represente une particule dans la simulation
+//Représente une particule dans le monde 2D
 struct Particle {
-    float x;    //position X
-    float y;    //position Y
-    float vx;   //vitesse X
-    float vy;   //vitesse Y
-    float rad;  //rayon des particules (pour les collisions entre particules)
-
-    std::uint8_t r; //rouge (0-255)
-    std::uint8_t g; //vert
-    std::uint8_t b; //bleu
-    std::uint8_t a; //alpha (0-255)
+    float   x;
+    float   y;
+    float   vx;
+    float   vy;
+    float   rad;
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+    uint8_t a;
 };
 
-//Parametres de la simulation
-//Ce struct est partagé entre CPU et CUDA
+// Paramètres globaux de la simulation (CPU et GPU utilisent exactement la même struct)
 struct SimParams {
-    //step de temps
-    float dt        = 0.016f;
+    float dt         = 0.016f; //step de temps
+    float damping    = 0.99f;  //amortissement des vitesses
 
-    //Facteur de damping global sur les vitesses
-    //(0.0 = tout s’arrête, ~1.0 = très peu de frottement)
-    float damping   = 0.99f;
+    float mouseX     = 0.0f;
+    float mouseY     = 0.0f;
+    float mouseForce = 0.0f;
+    float range      = 150.0f; //rayon d'influence de la souris
 
-    //Position de la souris dans la zone de rendu
-    float mouseX    = 0.f;
-    float mouseY    = 0.f;
+    float worldWidth  = 0.0f;  //largeur de la zone de simulation
+    float worldHeight = 0.0f;  //hauteur de la zone de simulation
 
-    //Force exercee par la souris (attraction/repulsion)
-    float mouseForce = 0.f;
+    float elasticity  = 1.0f;  //coefficient d'élasticité des collisions
 
-    //Rayon d’influence de la souris
-    float range      = 150.f;
-
-    // Dimensions du monde (zone de rendu/fenetre Raylib)
-    // Si <= 0, on considere qu'il n'y a pas de murs pour ce backend
-    float worldWidth  = 0.f;
-    float worldHeight = 0.f;
-
-    //Coefficient d'elasticité des collisions entre particules (epsilon)
-    //0.0 = choc parfaitement non elastique, 1.0 = choc parfaitement elastique.
-    float elasticity  = 1.0f;
+    float gravity     = 0.0f;  //accélération verticale (pixels/s^2, vers le bas si > 0)
 };
+

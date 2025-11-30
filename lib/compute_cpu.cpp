@@ -12,8 +12,12 @@ public:
     void step(SimParams p) override {
         const float range2 = p.range * p.range;
 
-        //1) Intégration des forces (souris) + damping + intégration de la position
+        //1) Integration des forces (gravité + souris) + damping + intégration de la position
         for (auto& s : m_buf) {
+            //Accelerations de base
+            float ax = 0.0f;
+            float ay = p.gravity; //gravité vers le bas (y croissant)
+
             //Force de la souris
             float dx = p.mouseX - s.x;
             float dy = p.mouseY - s.y;
@@ -24,14 +28,13 @@ public:
                 float fx = p.mouseForce * dx * invd;
                 float fy = p.mouseForce * dy * invd;
 
-                //Integration de la force sur la vitesse puis damping
-                s.vx = (s.vx + fx * p.dt) * p.damping;
-                s.vy = (s.vy + fy * p.dt) * p.damping;
-            } else {
-                //Pas de force de souris, juste le damping
-                s.vx *= p.damping;
-                s.vy *= p.damping;
+                ax += fx;
+                ay += fy;
             }
+
+            //Integration des vitesses avec damping
+            s.vx = (s.vx + ax * p.dt) * p.damping;
+            s.vy = (s.vy + ay * p.dt) * p.damping;
 
             //Integration de la position
             s.x += s.vx * p.dt;
@@ -59,7 +62,7 @@ public:
             }
         }
 
-        //2) Collisions inter-particules (O(N^2))
+        //Collisions inter-particules (O(N^2)) (voir aussi code cuda methode employée)
         const std::size_t N = m_buf.size();
         const float eps = p.elasticity;
 
@@ -72,7 +75,7 @@ public:
                 float dy = b.y - a.y;
                 float dist2 = dx*dx + dy*dy;
 
-                const float rsum = a.rad + b.rad;
+                const float rsum  = a.rad + b.rad;
                 const float rsum2 = rsum * rsum;
 
                 //Test de collision (cercles)
@@ -84,11 +87,11 @@ public:
                         dy = 0.0f;
                     }
 
-                    //Vecteur normal (du centre de a vers b)
+                    //Vecteur normal du centre de a vers b
                     float nx = dx / dist;
                     float ny = dy / dist;
 
-                    //separation des centres
+                    //Separation des centres
                     float overlap = rsum - dist;
                     if (overlap > 0.0f) {
                         float corr = 0.5f * overlap;
@@ -99,15 +102,15 @@ public:
                     }
 
                     //Vitesses relatives le long de la normale
-                    float rvx = b.vx - a.vx;
-                    float rvy = b.vy - a.vy;
+                    float rvx    = b.vx - a.vx;
+                    float rvy    = b.vy - a.vy;
                     float relVel = rvx * nx + rvy * ny;
 
-                    //Si les particules s'éloignent déjà, pas de rebond
+                    //Si les particules s'eloignent déjà pas de rebond
                     if (relVel > 0.0f)
                         continue;
 
-                    //Impulsion (masses = 1, 1)
+                    //Impulsion
                     float jimp = -(1.0f + eps) * relVel / 2.0f;
 
                     float impX = jimp * nx;
