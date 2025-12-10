@@ -1,3 +1,6 @@
+//Ce code definit les comportements des particules, la physique du projet
+//sur le CPU (simulation sur processeur)
+
 #include "compute.hpp"
 #include <cmath>
 
@@ -16,7 +19,41 @@ public:
         for (auto& s : m_buf) {
             //Accelerations de base
             float ax = 0.0f;
-            float ay = p.gravity; //gravité vers le bas (y croissant)
+            float ay = 0.0f;
+
+            // Gravité :
+            //- si p.gravity > 0 : gravité verticale classique vers le bas (y croissant)
+            //- si p.gravity < 0 : gravité centrale autour du centre de l'ecran + composante tangentielle (tourbillon)
+            if (p.gravity > 0.0f) {
+                //gravité normale vers le bas
+                ay += p.gravity;
+            }
+            else if (p.gravity < 0.0f && p.worldWidth > 0.0f && p.worldHeight > 0.0f) {
+                float g  = -p.gravity; //intensité positive
+                float cx = 0.5f * p.worldWidth;
+                float cy = 0.5f * p.worldHeight;
+
+                float gx = cx - s.x;
+                float gy = cy - s.y;
+                float d2c = gx * gx + gy * gy;
+
+                if (d2c > 1e-4f) {
+                    float invd = 1.0f / std::sqrt(d2c);
+                    gx *= invd;
+                    gy *= invd;
+
+                    //Composante radiale vers le centre
+                    ax += g * gx;
+                    ay += g * gy;
+
+                    //Composante tangentielle pour forcer le tourbillon (rotation horaire)
+                    float tx = -gy;
+                    float ty =  gx;
+                    float swirl = 3.0f * g; //facteur de rotation
+                    ax += swirl * tx;
+                    ay += swirl * ty;
+                }
+            }
 
             //Force de la souris
             float dx = p.mouseX - s.x;
@@ -62,7 +99,7 @@ public:
             }
         }
 
-        //Collisions inter-particules (O(N^2)) (voir aussi code cuda methode employée)
+        //Collisions inter-particules (O(N^2)) (voir aussi code cuda methode employee)
         const std::size_t N = m_buf.size();
         const float eps = p.elasticity;
 
@@ -116,13 +153,48 @@ public:
                     float impX = jimp * nx;
                     float impY = jimp * ny;
 
-                    //Applique l'impulsion rebond élastique avec eps
+                    //Applique l'impulsion rebond elastique avec eps
                     a.vx -= impX;
                     a.vy -= impY;
                     b.vx += impX;
                     b.vy += impY;
                 }
             }
+        }
+
+        //Couleur en fonction de la vitesse (petit dégradé arc-en-ciel)
+        const float speedMin = 20.0f;   //en-dessous, on considere que c'est quasi à l'arret
+        const float speedMax = 600.0f;  //au-dessus, on le traite comme tres rapide
+
+        for (auto& s : m_buf) {
+            float vx = s.vx;
+            float vy = s.vy;
+            float speed = std::sqrt(vx * vx + vy * vy);
+
+            //On ramène la vitesse dans [0,1] pour faire un degradé
+            float t = (speed - speedMin) / (speedMax - speedMin);
+            if (t < 0.0f) t = 0.0f;
+            if (t > 1.0f) t = 1.0f;
+
+            //On genere un arc-en-ciel avec trois sinusoides déphasees
+            const float twoPi = 6.28318530718f;
+            float rF = 0.5f + 0.5f * std::sinf(twoPi * (t + 0.0f));
+            float gF = 0.5f + 0.5f * std::sinf(twoPi * (t + 1.0f / 3.0f));
+            float bF = 0.5f + 0.5f * std::sinf(twoPi * (t + 2.0f / 3.0f));
+
+            unsigned char r = static_cast<unsigned char>(40.0f  + 215.0f * rF);
+            unsigned char g = static_cast<unsigned char>(40.0f  + 215.0f * gF);
+            unsigned char b = static_cast<unsigned char>(40.0f  + 215.0f * bF);
+
+            s.r = r;
+            s.g = g;
+            s.b = b;
+            s.a = 255;
+
+            //Taille des particules en fonction de la vitesse (un peu plus grosses quand ça va vite)
+            float baseRadius = 4.0f;     //taille mini
+            float extraRadius = 6.0f;    //taille max en plus
+            s.rad = baseRadius + extraRadius * t;
         }
     }
 

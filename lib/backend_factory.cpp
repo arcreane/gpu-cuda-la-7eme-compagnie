@@ -1,3 +1,5 @@
+//Ce code permet de choisir entre la simulation sur CPU et GPU
+
 #include "compute.hpp"
 #include <iostream>
 

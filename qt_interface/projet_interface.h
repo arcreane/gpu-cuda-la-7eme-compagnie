@@ -4,6 +4,8 @@
 #include <QTimer>
 #include <QElapsedTimer>
 #include <memory>
+#include <QMenu>
+#include <QAction>
 
 #include "ui_projet_interface.h"
 #include "sim_world.hpp"
@@ -25,13 +27,13 @@ private:
     //Met à jour m_params à partir des widgets Qt
     void updateSimParamsFromUi();
 
-    //Crée le monde si nécessaire
+    //Crée le monde si necessaire
     void createWorldIfNeeded();
 
 private:
     Ui::projet_interfaceClass ui;
 
-    ParticleView* m_view = nullptr;          // zone de rendu
+    ParticleView* m_view = nullptr; //zone de rendu
 
     std::unique_ptr<SimWorld> m_world;
     SimParams m_params{};
@@ -42,4 +44,14 @@ private:
     QElapsedTimer m_fpsTimer;
     int   m_fpsFrames = 0;
     float m_fpsValue  = 0.0f;
+
+    //Menu d'effets
+    QMenu*   m_effectsMenu         = nullptr;
+    QAction* m_actionMotionBlur    = nullptr;
+    QAction* m_actionGlow          = nullptr;
+    QAction* m_actionRainbow       = nullptr; //nouvelle action : effet arc en ciel
+    QAction* m_actionCenterGravity = nullptr; //nouvelle action : gravité centrale
+
+    //Etat de la gravité centrale
+    bool m_centralGravity = false;
 };

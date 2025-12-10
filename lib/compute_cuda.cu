@@ -1,8 +1,5 @@
-//------------------------------------------------------------------------------
-// CODE COMPUTE CUDA PROPRE A TESTER
-//------------------------------------------------------------------------------
-
-
+//Ce code definit le comportement et la physique des particules dans la
+//simulation sur GPU
 #include "compute.hpp"
 
 #include <cuda_runtime.h>
@@ -10,18 +7,16 @@
 #include <vector>
 #include <math.h>
 
-// -----------------------------------------------------------------------------
-// Quelques paramètres internes pour la grille spatiale
-// La grille sert à éviter les collisions O(N²)
-// On divise le monde en petites cellules, et chaque particule ne teste qu'avec celles dans les cellules voisines.
-// -----------------------------------------------------------------------------
-static constexpr int CELL_SIZE = 32;     //Taille d'une cellule (pixels)
-static constexpr int MAX_NEIGHBORS = 32; //Securité pour la liste interne
+//Quelques parametres internes pour la grille spatiale
+//La grille sert à eviter les collisions O(N²)
+//On divise le monde en petites cellules, et chaque particule ne teste
+//qu'avec celles dans les cellules voisines
+
+static constexpr int CELL_SIZE      = 32; //Taille d'une cellule (pixels)
+static constexpr int MAX_NEIGHBORS = 32; //Sécurité pour la liste interne
 
 
-// -----------------------------------------------------------------------------
-// Calcul de l'index de cellule (x,y) (index lineaire)
-// -----------------------------------------------------------------------------
+//Calcul de l'index de cellule (x,y) (en lineaire)
 __device__ __forceinline__
 int cell_index(int cx, int cy, int gridW, int gridH)
 {
@@ -31,10 +26,8 @@ int cell_index(int cx, int cy, int gridW, int gridH)
 }
 
 
-// -----------------------------------------------------------------------------
-// KERNEL : Mise à jour simple (forces, souris, gravité, murs)
-// Un thread = une particule
-// -----------------------------------------------------------------------------
+//KERNEL : Mise à jour simple (forces, souris, gravité, murs)
+//Un thread = une particule
 __global__
 void kernel_step_basic(Particle* buf, std::size_t N, SimParams p)
 {
@@ -45,9 +38,44 @@ void kernel_step_basic(Particle* buf, std::size_t N, SimParams p)
 
     const float range2 = p.range * p.range;
 
-    //Accélérations de base
+    //Accelerations de base
     float ax = 0.0f;
-    float ay = p.gravity;
+    float ay = 0.0f;
+
+    //Gravité :
+    //- si p.gravity > 0 : gravité verticale classique vers le bas (y croissant)
+    //- si p.gravity < 0 : gravité centrale autour du centre de l'écran
+    //+ composante tangentielle (tourbillon)
+    if (p.gravity > 0.0f) {
+        //gravité normale vers le bas
+        ay += p.gravity;
+    }
+    else if (p.gravity < 0.0f && p.worldWidth > 0.0f && p.worldHeight > 0.0f) {
+        float g  = -p.gravity;
+        float cx = 0.5f * p.worldWidth;
+        float cy = 0.5f * p.worldHeight;
+
+        float gx = cx - s.x;
+        float gy = cy - s.y;
+        float d2c = gx * gx + gy * gy;
+
+        if (d2c > 1e-4f) {
+            float invd = rsqrtf(d2c);
+            gx *= invd;
+            gy *= invd;
+
+            //Composante radiale vers le centre
+            ax += g * gx;
+            ay += g * gy;
+
+            //Composante tangentielle pour forcer le tourbillon (rotation horaire)
+            float tx = -gy;
+            float ty =  gx;
+            float swirl = 3.0f * g;
+            ax += swirl * tx;
+            ay += swirl * ty;
+        }
+    }
 
     //Force souris
     float dx = p.mouseX - s.x;
@@ -93,10 +121,8 @@ void kernel_step_basic(Particle* buf, std::size_t N, SimParams p)
 }
 
 
-// -----------------------------------------------------------------------------
-// KERNEL : Construction de la grille
-// Chaque thread met une particule dans la cellule correspondante.
-// -----------------------------------------------------------------------------
+//KERNEL : Construction de la grille
+//Chaque thread met une particule dans la cellule correspondante
 __global__
 void kernel_build_grid(
     Particle* buf,
@@ -126,11 +152,9 @@ void kernel_build_grid(
 }
 
 
-// -----------------------------------------------------------------------------
-// KERNEL : Collisions optimisees avec grille
-// Chaque thread = une particule
-// On teste les particules dans les cellules voisines (9 cellules max)
-// -----------------------------------------------------------------------------
+//KERNEL : Collisions optimisees avec grille
+//Chaque thread = une particule
+//On teste les particules dans les cellules voisines (9 cellules max)
 __global__
 void kernel_collisions_grid(
     Particle* buf,
@@ -216,13 +240,43 @@ void kernel_collisions_grid(
         }
     }
 
+    //Couleur en fonction de la vitesse (petit degradé arc-en-ciel)
+    const float speedMin = 20.0f;
+    const float speedMax = 600.0f;
+
+    float vx = a.vx;
+    float vy = a.vy;
+    float speed = sqrtf(vx * vx + vy * vy);
+
+    float t = (speed - speedMin) / (speedMax - speedMin);
+    if (t < 0.0f) t = 0.0f;
+    if (t > 1.0f) t = 1.0f;
+
+    //On genere un ar-en-ciel avec trois sinusoïdes déphasees
+    const float twoPi = 6.28318530718f;
+    float rF = 0.5f + 0.5f * sinf(twoPi * (t + 0.0f));
+    float gF = 0.5f + 0.5f * sinf(twoPi * (t + 1.0f / 3.0f));
+    float bF = 0.5f + 0.5f * sinf(twoPi * (t + 2.0f / 3.0f));
+
+    unsigned char r = (unsigned char)(40.0f  + 215.0f * rF);
+    unsigned char g = (unsigned char)(40.0f  + 215.0f * gF);
+    unsigned char b = (unsigned char)(40.0f  + 215.0f * bF);
+
+    a.r = r;
+    a.g = g;
+    a.b = b;
+    a.a = 255u;
+
+    //Taille des particules en fonction de la vitesse (un peu plus grosses quand ça va vite)
+    float baseRadius = 4.0f;
+    float extraRadius = 6.0f;
+    a.rad = baseRadius + extraRadius * t;
+
     buf[i] = a;
 }
 
 
-// -----------------------------------------------------------------------------
-// Backend CUDA
-// -----------------------------------------------------------------------------
+//Backend CUDA
 class BackendCUDA : public IComputeBackend {
 public:
     explicit BackendCUDA(std::size_t n)
@@ -232,7 +286,7 @@ public:
 
         cudaMalloc(&d_buf, m_n * sizeof(Particle));
 
-        //Taille de la grille
+        //Taille de la grille (on part sur une zone max 2000x2000 pixels)
         m_gridW = 1 + int(2000 / CELL_SIZE);
         m_gridH = 1 + int(2000 / CELL_SIZE);
 
@@ -243,9 +297,9 @@ public:
     }
 
     ~BackendCUDA() override {
-        if (d_buf) cudaFree(d_buf);
+        if (d_buf)        cudaFree(d_buf);
         if (d_gridCounts) cudaFree(d_gridCounts);
-        if (d_gridCells) cudaFree(d_gridCells);
+        if (d_gridCells)  cudaFree(d_gridCells);
     }
 
     void upload(const std::vector<Particle>& host) override {
@@ -280,7 +334,7 @@ public:
             d_buf, d_gridCounts, d_gridCells, m_gridW, m_gridH, m_n
         );
 
-        //4) Collisions optimisées via grille
+        //4) Collisions optimisees via grille
         kernel_collisions_grid<<<gridSize, blockSize>>>(
             d_buf, d_gridCounts, d_gridCells,
             m_gridW, m_gridH, m_n, p.elasticity
@@ -303,9 +357,7 @@ private:
 };
 
 
-// -----------------------------------------------------------------------------
-// Backenfd CUDA
-// -----------------------------------------------------------------------------
+//Backend CUDA
 IComputeBackend* make_backend_cuda(std::size_t n)
 {
     return new BackendCUDA(n);

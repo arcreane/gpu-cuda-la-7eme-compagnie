@@ -22,6 +22,7 @@
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QToolBar>
+#include <QtWidgets/QToolButton>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -51,6 +52,7 @@ public:
     QLabel *label_fps;
     QLabel *label_2;
     QComboBox *combo_backend;
+    QToolButton *toolButtonEffects;
     QWidget *widget;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
@@ -145,6 +147,10 @@ public:
         combo_backend = new QComboBox(frame);
         combo_backend->setObjectName("combo_backend");
         combo_backend->setGeometry(QRect(90, 360, 101, 22));
+        toolButtonEffects = new QToolButton(frame);
+        toolButtonEffects->setObjectName("toolButtonEffects");
+        toolButtonEffects->setGeometry(QRect(210, 360, 21, 22));
+        toolButtonEffects->setPopupMode(QToolButton::ToolButtonPopupMode::InstantPopup);
         widget = new QWidget(centralWidget);
         widget->setObjectName("widget");
         widget->setGeometry(QRect(250, 0, 571, 461));
@@ -183,6 +189,7 @@ public:
         btn_set->setText(QCoreApplication::translate("projet_interfaceClass", "Valider", nullptr));
         label_fps->setText(QCoreApplication::translate("projet_interfaceClass", "FPS : --", nullptr));
         label_2->setText(QCoreApplication::translate("projet_interfaceClass", "Backend :", nullptr));
+        toolButtonEffects->setText(QCoreApplication::translate("projet_interfaceClass", "...", nullptr));
     } // retranslateUi
 
 };

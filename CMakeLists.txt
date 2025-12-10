@@ -60,13 +60,13 @@ target_include_directories(sim_world PUBLIC lib)
 target_link_libraries(sim_world PUBLIC backend_factory)
 
 # ---------------------------------------------------------------------
-# Raylib for Qt integration
+# Raylib (used in Qt)
 # ---------------------------------------------------------------------
 set(RAYLIB_LIB "C:/raylib/raylib/build_msvc/raylib/Release/raylib.lib")
 set(RAYLIB_INCLUDE_DIR "C:/raylib/raylib/src")
 
 # ---------------------------------------------------------------------
-# UNIQUE FINAL EXECUTABLE : qt_interface
+# EXECUTABLE : qt_interface
 # ---------------------------------------------------------------------
 add_executable(qt_interface
     qt_interface/main.cpp
@@ -76,6 +76,7 @@ add_executable(qt_interface
     qt_interface/projet_interface.qrc
     qt_interface/ParticleView.cpp
     qt_interface/ParticleView.h
+    qt_interface/app_icon.rc
 )
 
 target_include_directories(qt_interface PRIVATE ${RAYLIB_INCLUDE_DIR})

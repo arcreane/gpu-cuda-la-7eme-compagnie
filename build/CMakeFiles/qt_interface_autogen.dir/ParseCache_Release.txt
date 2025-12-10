@@ -296,6 +296,7 @@ C:/Users/tutur/QTProjectAppli_7ecompagnie/qt_interface/projet_interface.h
  mdp:C:/Qt/6.9.3/msvc2022_64/include/QtCore/qversiontagging.h
  mdp:C:/Qt/6.9.3/msvc2022_64/include/QtCore/qxptype_traits.h
  mdp:C:/Qt/6.9.3/msvc2022_64/include/QtCore/qyieldcpu.h
+ mdp:C:/Qt/6.9.3/msvc2022_64/include/QtGui/QAction
  mdp:C:/Qt/6.9.3/msvc2022_64/include/QtGui/qaction.h
  mdp:C:/Qt/6.9.3/msvc2022_64/include/QtGui/qbitmap.h
  mdp:C:/Qt/6.9.3/msvc2022_64/include/QtGui/qbrush.h
@@ -323,8 +324,10 @@ C:/Users/tutur/QTProjectAppli_7ecompagnie/qt_interface/projet_interface.h
  mdp:C:/Qt/6.9.3/msvc2022_64/include/QtGui/qwindowdefs.h
  mdp:C:/Qt/6.9.3/msvc2022_64/include/QtGui/qwindowdefs_win.h
  mdp:C:/Qt/6.9.3/msvc2022_64/include/QtWidgets/QMainWindow
+ mdp:C:/Qt/6.9.3/msvc2022_64/include/QtWidgets/QMenu
  mdp:C:/Qt/6.9.3/msvc2022_64/include/QtWidgets/QWidget
  mdp:C:/Qt/6.9.3/msvc2022_64/include/QtWidgets/qmainwindow.h
+ mdp:C:/Qt/6.9.3/msvc2022_64/include/QtWidgets/qmenu.h
  mdp:C:/Qt/6.9.3/msvc2022_64/include/QtWidgets/qsizepolicy.h
  mdp:C:/Qt/6.9.3/msvc2022_64/include/QtWidgets/qtabwidget.h
  mdp:C:/Qt/6.9.3/msvc2022_64/include/QtWidgets/qtwidgets-config.h

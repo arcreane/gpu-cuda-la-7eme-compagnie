@@ -14,7 +14,7 @@ void SimWorld::randomInit(unsigned int seed) {
     std::uniform_real_distribution<float> X(0.f, m_width);
     std::uniform_real_distribution<float> Y(0.f, m_height);
 
-    //rayon entre 2 et 6 pixels (on pourra parametrer plus tard sur Qt)
+    //rayon entre 2 et 6 pixels
     std::uniform_real_distribution<float> R(2.f, 6.f);
 
     for (auto& p : m_host) {

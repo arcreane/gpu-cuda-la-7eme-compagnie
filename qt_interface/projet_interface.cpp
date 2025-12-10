@@ -6,9 +6,13 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QComboBox>
+#include <QCheckBox>
 #include <QDebug>
 #include <QResizeEvent>
 #include <QLayout>
+#include <QToolButton>
+#include <QMenu>
+#include <QAction>
 #include <algorithm>
 #include <vector>
 
@@ -22,25 +26,25 @@ projet_interface::projet_interface(QWidget* parent)
 {
     ui.setupUi(this);
 
-    //Backend par défaut : CPU
+    //Backend par defaut : CPU
     set_backend_use_cuda(false);
 
-    //Enleve les marges du layout central pour dviter les bandes grises
+    //Enleve les marges du layout central pour fit la fenetre
     if (auto* lay = ui.centralWidget->layout()) {
         lay->setContentsMargins(0, 0, 0, 0);
     }
 
-    // ============================================================
-    // 1) CREATION DU WIDGET DE RENDU SUR LA PARTIE DROITE
-    // ============================================================
+    //============================================================
+    //1) CREATION DU WIDGET DE RENDU SUR LA PARTIE DROITE
+    //============================================================
 
     //cache l'ancien widget noir défini dans le .ui
     ui.widget->hide();
 
-    //Vue de par
+    //Vue de particules (Raylib dans un QWidget)
     m_view = new ParticleView(ui.centralWidget);
 
-    //Geométrie initiale alignée sur la zone de droite
+    //Geometrie initiale alignee sur la zone de droite
     int leftWidth = ui.frame->width();
     int h = ui.centralWidget->height();
     int w = ui.centralWidget->width() - leftWidth;
@@ -51,15 +55,80 @@ projet_interface::projet_interface(QWidget* parent)
     //Label FPS côté bandeau gauche
     ui.label_fps->setText("FPS: --");
 
-    // ============================================================
-    // 1.2) COMBO BACKEND CPU / GPU
-    // ============================================================
+    //Menu d'effets (motion blur, etc.)
+    m_effectsMenu = new QMenu(this);
+
+    //Action pour activer/désactiver le motion blur
+    m_actionMotionBlur = m_effectsMenu->addAction("Motion blur");
+    m_actionMotionBlur->setCheckable(true);
+    m_actionMotionBlur->setChecked(false); //désactivé par defaut
+
+    //Action pour activer/désactiver le halo neon
+    m_actionGlow = m_effectsMenu->addAction("Halo néon");
+    m_actionGlow->setCheckable(true);
+    m_actionGlow->setChecked(false); //desactivé par défaut
+
+    //Action pour activer/désactiver l'effet arc en ciel
+    m_actionRainbow = m_effectsMenu->addAction("Arc-en-ciel");
+    m_actionRainbow->setCheckable(true);
+    m_actionRainbow->setChecked(false); //désactivé par défaut
+
+    //Tourbillon
+    m_actionCenterGravity = m_effectsMenu->addAction("Tourbillon (Gravité centrale)");
+    m_actionCenterGravity->setCheckable(true);
+    m_actionCenterGravity->setChecked(false); //desactivé par défaut
+    m_centralGravity = m_actionCenterGravity->isChecked();
+
+    //On associe le menu au bouton d'effets dans l'UI
+    ui.toolButtonEffects->setMenu(m_effectsMenu);
+    ui.toolButtonEffects->setPopupMode(QToolButton::InstantPopup);
+
+    //Etat initial des effets côté vue
+    if (m_view) {
+        m_view->setMotionBlurEnabled(m_actionMotionBlur->isChecked());
+        m_view->setGlowEnabled(m_actionGlow->isChecked());
+        m_view->setRainbowEnabled(m_actionRainbow->isChecked());
+    }
+
+    //Quand on coche/decoche Motion blur dans le menu, on met à jour la vue
+    connect(m_actionMotionBlur, &QAction::toggled,
+            this, [this](bool checked) {
+        if (m_view) {
+            m_view->setMotionBlurEnabled(checked);
+        }
+    });
+
+    //Quand on coche/decoche Halo neon dans le menu, on met à jour la vue
+    connect(m_actionGlow, &QAction::toggled,
+            this, [this](bool checked) {
+        if (m_view) {
+            m_view->setGlowEnabled(checked);
+        }
+    });
+
+    //Quand on coche/decoche Arc-en-ciel, on met à jour la vue
+    connect(m_actionRainbow, &QAction::toggled,
+            this, [this](bool checked) {
+        if (m_view) {
+            m_view->setRainbowEnabled(checked);
+        }
+    });
+
+    //Quand on coche/decoche Gravité centrale, on met à jour le flag
+    connect(m_actionCenterGravity, &QAction::toggled,
+            this, [this](bool checked) {
+        m_centralGravity = checked;
+    });
+
+    //============================================================
+    //1.2) COMBO BACKEND CPU/GPU
+    //============================================================
 
     if (ui.combo_backend) {
         ui.combo_backend->clear();
         ui.combo_backend->addItem("CPU");
         ui.combo_backend->addItem("GPU");
-        ui.combo_backend->setCurrentIndex(0); //CPU par défaut
+        ui.combo_backend->setCurrentIndex(0); //CPU par defaut
 
         connect(ui.combo_backend, QOverload<int>::of(&QComboBox::currentIndexChanged),
                 this, [this](int index) {
@@ -74,7 +143,7 @@ projet_interface::projet_interface(QWidget* parent)
             m_running = false;
             if (m_timer) m_timer->stop();
 
-            //On détruit l'ancien monde (qui utilisait l'ancien backend)
+            //On detruit l'ancien monde (qui utilisait l'ancien backend)
             m_world.reset();
 
             //Reset FPS
@@ -100,9 +169,9 @@ projet_interface::projet_interface(QWidget* parent)
         });
     }
 
-    // ============================================================
-    // 2) CONFIGURATION DES SLIDERS / SPINBOX
-    // ============================================================
+    //============================================================
+    //2) CONFIGURATION DES SLIDERS/SPINBOX
+    //===========================================================
 
     //Nombre de particules
     ui.slider_nbparticule->setRange(0, 20000);
@@ -133,7 +202,7 @@ projet_interface::projet_interface(QWidget* parent)
                 ui.slider_restitution->setValue(static_cast<int>(v * 100));
             });
 
-    //Force d'exposition (puissance de la souris)
+    //Force de la souris
     ui.doubleSpinBox->setRange(0.0, 2000.0);
     ui.doubleSpinBox->setDecimals(2);
     ui.doubleSpinBox->setSingleStep(10.0);
@@ -157,9 +226,9 @@ projet_interface::projet_interface(QWidget* parent)
     ui.spin_gravite->setSingleStep(0.1);
     ui.spin_gravite->setValue(0.0);
 
-    // ============================================================
-    // 3) INITIALISATION DES PARAMÈTRES
-    // ============================================================
+    //============================================================
+    //3) INITIALISATION DES PARAMETRES
+    //============================================================
     m_params.dt          = 1.0f / 60.0f;
     m_params.damping     = 0.98f;
     m_params.elasticity  = static_cast<float>(ui.restitution->value());
@@ -169,26 +238,30 @@ projet_interface::projet_interface(QWidget* parent)
     m_params.worldWidth  = static_cast<float>(GetScreenWidth());
     m_params.worldHeight = static_cast<float>(GetScreenHeight());
 
-    m_params.gravity     = static_cast<float>(ui.spin_gravite->value());
+    //Gravité : positive = verticale, negative = gravité centrale
+    {
+        float g0 = static_cast<float>(ui.spin_gravite->value()) * 30.0f;
+        m_params.gravity = m_centralGravity ? -g0 : g0;
+    }
 
     //Init compteur FPS
     m_fpsTimer.start();
     m_fpsFrames = 0;
     m_fpsValue  = 0.0f;
 
-    // ============================================================
-    // 4) TIMER DE SIMULATION (~60 Hz) + FPS + INPUT RAYLIB
-    // ============================================================
+    //============================================================
+    //4) TIMER DE SIMULATION (60 Hz) + FPS + INPUT RAYLIB
+    //============================================================
     m_timer = new QTimer(this);
     m_timer->setInterval(16);
     connect(m_timer, &QTimer::timeout, this, [this]() {
         if (!m_world || !m_running)
             return;
 
-        // --- Mise à jour des paramètres depuis l'UI ---
+        //Mise à jour des parametres depuis l'UI
         updateSimParamsFromUi();
 
-        // --- Gestion de la souris via Raylib ---
+        //Gestion de la souris via Raylib
         Vector2 mouse = GetMousePosition();
         m_params.mouseX = mouse.x;
         m_params.mouseY = mouse.y;
@@ -204,10 +277,10 @@ projet_interface::projet_interface(QWidget* parent)
             m_params.mouseForce = -baseForce;
         }
 
-        // --- Step de simulation ---
+        //Step de simulation
         m_world->step(m_params);
 
-        // --- Calcul FPS ---
+        //Calcul FPS
         m_fpsFrames++;
         qint64 elapsedMs = m_fpsTimer.elapsed();
         if (elapsedMs >= 500) {
@@ -221,26 +294,27 @@ projet_interface::projet_interface(QWidget* parent)
             );
         }
 
-        // --- Rendu Raylib à l'intérieur du widget ---
+        //Rendu Raylib à l'interieur du widget
         m_view->render(m_world->particles(), m_fpsValue);
     });
 
-    // ============================================================
-    // 5) BOUTON "RESET"
-    // ============================================================
+    //============================================================
+    //5) BOUTON RESET
+    //============================================================
     connect(ui.btn_reset, &QPushButton::clicked, this, [this]() {
-        //Stoppe la simu
+        //Stop la simu
         m_running = false;
         if (m_timer) m_timer->stop();
 
         //Detruit le monde
         m_world.reset();
 
-        //Reinitialise les forces/paramètres
+        //Reinitialise les forces/parametres
         m_params.mouseForce = 0.0f;
 
-        //On laisse la gravité contrôlée par le spinbox
-        m_params.gravity = static_cast<float>(ui.spin_gravite->value());
+        //Gravité : positive = verticale, negative = gravité centrale
+        float gReset = static_cast<float>(ui.spin_gravite->value()) * 30.0f;
+        m_params.gravity = m_centralGravity ? -gReset : gReset;
 
         //Reset FPS
         m_fpsFrames = 0;
@@ -248,14 +322,14 @@ projet_interface::projet_interface(QWidget* parent)
         m_fpsTimer.restart();
         ui.label_fps->setText("FPS: --");
 
-        //Raylib dessine un écran vide
+        //Raylib dessine un ecran vide
         std::vector<Particle> empty;
         m_view->render(empty, 0.0f);
     });
 
-    // ============================================================
-    // 6) BOUTON "PLAY" (lance ou met en pause la simu)
-    // ============================================================
+    //============================================================
+    //6) BOUTON PLAY (lance ou met en pause la simu)
+    //============================================================
     connect(ui.pushButton, &QPushButton::clicked, this, [this]() {
         if (!m_world)
             createWorldIfNeeded();
@@ -299,12 +373,12 @@ void projet_interface::resizeEvent(QResizeEvent* event)
     //On force le frame à occuper toute la hauteur sur la gauche
     ui.frame->setGeometry(0, 0, leftWidth, totalH);
 
-    //Et la vue Raylib occupe tout le reste à droite, sur toute la hauteur
+    //Et la vue Raylib occupe tout le reste à droite sur toute la hauteur
     int wRight = totalW - leftWidth;
     if (wRight < 1) wRight = 1;
     m_view->setGeometry(leftWidth, 0, wRight, totalH);
 
-    //On garde les tailles de la fenêtre Raylib comme référence pour le monde
+    //On garde les tailles de la fenetre Raylib comme reference pour le monde
     m_params.worldWidth  = static_cast<float>(GetScreenWidth());
     m_params.worldHeight = static_cast<float>(GetScreenHeight());
 }
@@ -313,7 +387,7 @@ void projet_interface::updateSimParamsFromUi()
 {
     m_params.dt = 1.0f / 60.0f;
 
-    // Taille du monde = taille de la fenêtre Raylib
+    //Taille du monde = taille de la fenetre Raylib
     m_params.worldWidth  = static_cast<float>(GetScreenWidth());
     m_params.worldHeight = static_cast<float>(GetScreenHeight());
 
@@ -324,7 +398,9 @@ void projet_interface::updateSimParamsFromUi()
     friction = std::clamp(friction, 0.0f, 0.99f);
     m_params.damping = 1.0f - friction;
 
-    m_params.gravity  = static_cast<float>(ui.spin_gravite->value()) * 30.0f;
+    //Gravité : positive = verticale, negative = gravité centrale
+    float g = static_cast<float>(ui.spin_gravite->value()) * 30.0f;
+    m_params.gravity = m_centralGravity ? -g : g;
 }
 
 void projet_interface::createWorldIfNeeded()

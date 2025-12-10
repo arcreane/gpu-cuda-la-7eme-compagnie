@@ -629,6 +629,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </None>
     <ClCompile Include="C:\Users\tutur\QTProjectAppli_7ecompagnie\qt_interface\ParticleView.cpp" />
     <ClInclude Include="C:\Users\tutur\QTProjectAppli_7ecompagnie\qt_interface\ParticleView.h" />
+    <ResourceCompile Include="C:\Users\tutur\QTProjectAppli_7ecompagnie\qt_interface\app_icon.rc" />
     <ClInclude Include="C:\Users\tutur\QTProjectAppli_7ecompagnie\build\qt_interface_autogen\include_Debug\qt_interface\ui_projet_interface.h" />
     <None Include="C:\Users\tutur\QTProjectAppli_7ecompagnie\build\qt_interface_autogen\autouic_Debug.stamp">
     </None>
