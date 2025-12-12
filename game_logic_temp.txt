@@ -1,0 +1,146 @@
+        //=== LOGIQUE DE JEU ===
+        if (m_gameStarted && !m_gameOver) {
+            float deltaTime = 0.016f; // ~60 FPS
+
+            //Décrémenter le timer
+            m_gameTime -= deltaTime;
+            if (m_gameTime <= 0.0f) {
+                m_gameTime = 0.0f;
+                m_gameOver = true;
+                m_running = false;
+                m_timer->stop();
+
+                QMessageBox::information(this, "Game Over!",
+                    QString("Temps écoulé!\nScore final: %1\nCombo max: x%2")
+                    .arg(m_score).arg(m_combo));
+            }
+
+            //Décrémenter les timers des power-ups actifs
+            if (m_megaForceTimer > 0.0f) m_megaForceTimer -= deltaTime;
+            if (m_superRangeTimer > 0.0f) m_superRangeTimer -= deltaTime;
+            if (m_scoreX2Timer > 0.0f) m_scoreX2Timer -= deltaTime;
+
+            //Timer de spawn des power-ups
+            m_powerUpSpawnTimer += deltaTime;
+            if (m_powerUpSpawnTimer >= m_powerUpSpawnInterval) {
+                m_powerUpSpawnTimer = 0.0f;
+
+                //Créer un nouveau power-up à une position aléatoire
+                PowerUp powerUp;
+                std::random_device rd;
+                std::mt19937 gen(rd());
+                std::uniform_real_distribution<float> distX(50.0f, m_params.worldWidth - 50.0f);
+                std::uniform_real_distribution<float> distY(50.0f, m_params.worldHeight - 50.0f);
+                std::uniform_int_distribution<int> distType(0, 2);
+
+                powerUp.x = distX(gen);
+                powerUp.y = distY(gen);
+                powerUp.type = static_cast<PowerUpType>(distType(gen));
+                powerUp.collected = false;
+                powerUp.pulse = 0.0f;
+
+                m_powerUps.push_back(powerUp);
+            }
+
+            //Animation et collection des power-ups
+            QPoint mousePos = m_view->mapFromGlobal(QCursor::pos());
+            for (auto& powerUp : m_powerUps) {
+                if (powerUp.collected) continue;
+
+                powerUp.pulse += deltaTime * 3.0f; // Animation pulsante
+
+                //Vérifier si la souris est sur le power-up
+                float dx = mousePos.x() - powerUp.x;
+                float dy = mousePos.y() - powerUp.y;
+                float dist = std::sqrt(dx*dx + dy*dy);
+
+                if (dist < powerUp.radius) {
+                    powerUp.collected = true;
+
+                    //Activer l'effet du power-up
+                    switch (powerUp.type) {
+                        case MEGA_FORCE:
+                            m_megaForceTimer = 5.0f;
+                            break;
+                        case SUPER_RANGE:
+                            m_superRangeTimer = 5.0f;
+                            break;
+                        case SCORE_X2:
+                            m_scoreX2Timer = 10.0f;
+                            break;
+                    }
+                }
+            }
+
+            //Compter les particules affectées par la souris
+            int particlesAffected = 0;
+            const auto& particles = m_world->particles();
+            QPoint globalMouse = QCursor::pos();
+            QPoint localMouse = m_view->mapFromGlobal(globalMouse);
+
+            //Appliquer les effets des power-ups
+            float currentForce = std::abs(m_params.mouseForce);
+            if (m_megaForceTimer > 0.0f) {
+                currentForce *= 3.0f;
+            }
+
+            float currentRange = m_params.range;
+            if (m_superRangeTimer > 0.0f) {
+                currentRange *= 2.0f;
+            }
+
+            //Compter combien de particules sont dans le rayon d'action
+            for (const auto& p : particles) {
+                float dx = p.x - localMouse.x();
+                float dy = p.y - localMouse.y();
+                float dist = std::sqrt(dx*dx + dy*dy);
+
+                if (dist < currentRange) {
+                    particlesAffected++;
+                }
+            }
+
+            //Gestion du combo
+            m_comboTimer += deltaTime;
+            if (particlesAffected > 0) {
+                m_particlesAffectedLastFrame = particlesAffected;
+
+                //Si on vient juste de commencer à affecter des particules, reset combo timer
+                if (m_comboTimer > 1.0f) {
+                    m_combo = 1; //Reset combo si pas d'action depuis 1 seconde
+                }
+                m_comboTimer = 0.0f;
+            } else {
+                //Si pas d'action depuis 1 seconde, reset combo
+                if (m_comboTimer > 1.0f) {
+                    m_combo = 1;
+                }
+            }
+
+            //Calculer le score
+            if (particlesAffected > 0 && (QApplication::mouseButtons() & (Qt::LeftButton | Qt::RightButton))) {
+                int points = particlesAffected * m_combo;
+
+                //Bonus de combo tous les 10
+                if (m_combo > 0 && m_combo % 10 == 0) {
+                    points += 100; //Bonus
+                }
+
+                //Appliquer le multiplicateur Score x2
+                if (m_scoreX2Timer > 0.0f) {
+                    points *= 2;
+                }
+
+                m_score += points;
+                m_combo++; //Augmenter le combo
+            }
+
+            //Mettre à jour les labels
+            ui.label_fps->setText(QString("FPS: %1 | Time: %2s")
+                .arg(m_fpsValue, 0, 'f', 1)
+                .arg((int)m_gameTime));
+
+            ui.label_score->setText(QString("Score: %1 | Combo: x%2")
+                .arg(m_score)
+                .arg(m_combo));
+        }

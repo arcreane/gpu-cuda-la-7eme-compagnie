@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\henri\Documents\IPSA\AERO5\CUDA\build\compute_cuda_autogen\mocs_compilation_Debug.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\henri\Documents\IPSA\AERO5\CUDA\build\compute_cuda_autogen\mocs_compilation_Release.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\henri\Documents\IPSA\AERO5\CUDA\build\compute_cuda_autogen\mocs_compilation_MinSizeRel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\henri\Documents\IPSA\AERO5\CUDA\build\compute_cuda_autogen\mocs_compilation_RelWithDebInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\henri\Documents\IPSA\AERO5\CUDA\build\compute_cuda_autogen\include_Debug\qt_interface\ui_projet_interface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\henri\Documents\IPSA\AERO5\CUDA\build\compute_cuda_autogen\include_Release\qt_interface\ui_projet_interface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\henri\Documents\IPSA\AERO5\CUDA\build\compute_cuda_autogen\include_MinSizeRel\qt_interface\ui_projet_interface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\henri\Documents\IPSA\AERO5\CUDA\build\compute_cuda_autogen\include_RelWithDebInfo\qt_interface\ui_projet_interface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="..\lib\compute_cuda.cu">
+      <Filter>Source Files</Filter>
+    </CudaCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\henri\Documents\IPSA\AERO5\CUDA\build\CMakeFiles\c6890feb1c04484f2775507ef46f7b63\autouic_(CONFIG).stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\henri\Documents\IPSA\AERO5\CUDA\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\henri\Documents\IPSA\AERO5\CUDA\build\compute_cuda_autogen\autouic_Debug.stamp" />
+    <None Include="C:\Users\henri\Documents\IPSA\AERO5\CUDA\build\compute_cuda_autogen\autouic_Release.stamp" />
+    <None Include="C:\Users\henri\Documents\IPSA\AERO5\CUDA\build\compute_cuda_autogen\autouic_MinSizeRel.stamp" />
+    <None Include="C:\Users\henri\Documents\IPSA\AERO5\CUDA\build\compute_cuda_autogen\autouic_RelWithDebInfo.stamp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{B329A9D8-DE91-3B80-AEEE-8FA00B57A544}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{0B31142E-2B42-328A-A38F-A581929BD676}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{91D20DE6-015B-39D7-8EB1-2F0732AE572B}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
